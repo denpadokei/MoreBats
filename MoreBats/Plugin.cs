@@ -32,7 +32,7 @@ namespace MoreBats
             Log.Info("MoreBats initialized.");
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
             Log.Debug("Config loaded");
-            zenjector.OnMenu<MBMenuInstaller>();
+            zenjector.Install<MBMenuInstaller>(Location.Menu);
         }
 
         [OnStart]
