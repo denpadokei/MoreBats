@@ -1,4 +1,5 @@
-﻿using MoreBats.Configuration;
+﻿using BGLib.AppFlow.Initialization;
+using MoreBats.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 using Zenject;
 
@@ -18,6 +20,12 @@ namespace MoreBats
     /// </summary>
     public class MoreBatsController : MonoBehaviour, IInitializable
     {
+        [Inject]
+        private ZenjectSceneLoader zenjectSceneLoader;
+        [Inject]
+        private GameScenesManager gameScenesManager;
+        private Material material;
+
         public void Initialize()
         {   
         }
@@ -29,10 +37,18 @@ namespace MoreBats
             }
             var neon = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(x => x.name == "SaberNeon");
             var neonRoot = neon.transform.parent;
-            yield return SceneManager.LoadSceneAsync("HalloweenEnvironment", LoadSceneMode.Additive);
+            var i = zenjectSceneLoader.LoadSceneFromAddressablesAsync("HalloweenEnvironment", LoadSceneMode.Additive, true, 0, null, null, LoadSceneRelationship.None, null);
+            yield return i;
+            //yield return Addressables.LoadSceneAsync("HalloweenEnvironment", LoadSceneMode.Additive);
+            //yield return SceneManager.LoadSceneAsync(@"Scenes/HalloweenEnvironment", LoadSceneMode.Additive);
             try {
                 var batsParticle = Resources.FindObjectsOfTypeAll<ParticleSystem>().FirstOrDefault(x => x.name == "Bats");
+                var batsParticleRenderer = Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>().FirstOrDefault(x => x.name == "Bats");
+                //this._batsRenderer = Instantiate(batsParticleRenderer);
                 this._bats = Instantiate(batsParticle);
+                var rend = this._bats.gameObject.GetComponent<ParticleSystemRenderer>();
+                rend.material.shader = Instantiate(batsParticleRenderer.material.shader);
+
                 var main = this._bats.main;
                 main.maxParticles = int.MaxValue;
                 var em = this._bats.emission;
@@ -44,7 +60,7 @@ namespace MoreBats
             catch (Exception e) {
                 Plugin.Log.Error(e);
             }
-            yield return SceneManager.UnloadSceneAsync("HalloweenEnvironment");
+            yield return Addressables.UnloadSceneAsync(i, true);
         }
 
         // These methods are automatically called by Unity, you should remove any you aren't using.
@@ -73,6 +89,7 @@ namespace MoreBats
         }
 
         private ParticleSystem _bats;
+        private ParticleSystemRenderer _batsRenderer;
         #endregion
     }
 }

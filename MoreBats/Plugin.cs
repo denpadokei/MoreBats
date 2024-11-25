@@ -9,10 +9,33 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 using IPALogger = IPA.Logging.Logger;
 
 namespace MoreBats
 {
+#if DEBUG
+
+    internal class TestClass : IInitializable
+    {
+        public void Initialize()
+        {
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var s = SceneManager.GetSceneAt(i);
+                Plugin.Log.Info($"{s.buildIndex}, {s.name}, {s.path}");
+            }
+        }
+
+        [Inject]
+        public TestClass()
+        {
+            
+        }
+    }
+#endif
+
+
     [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin
     {
@@ -33,6 +56,9 @@ namespace MoreBats
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
             Log.Debug("Config loaded");
             zenjector.Install<MBMenuInstaller>(Location.Menu);
+#if DEBUG
+            zenjector.Install(Location.Player, d => d.BindInterfacesAndSelfTo<TestClass>().AsSingle());
+#endif
         }
 
         [OnStart]
