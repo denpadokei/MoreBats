@@ -26,7 +26,7 @@ namespace MoreBats.Views
 
         public void Initialize()
         {
-            BSMLSettings.instance.AddSettingsMenu("More Bats", ResourceName, this);
+            BSMLSettings.Instance.AddSettingsMenu("More Bats", ResourceName, this);
         }
     }
 }
