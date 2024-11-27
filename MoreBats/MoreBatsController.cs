@@ -17,9 +17,6 @@ namespace MoreBats
     {
         [Inject]
         private readonly ZenjectSceneLoader zenjectSceneLoader;
-        [Inject]
-        private readonly GameScenesManager gameScenesManager;
-        private readonly Material material;
 
         public void Initialize()
         {
