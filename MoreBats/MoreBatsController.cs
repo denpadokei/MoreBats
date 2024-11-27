@@ -35,8 +35,7 @@ namespace MoreBats
             var neonRoot = neon.transform.parent;
             var i = this.zenjectSceneLoader.LoadSceneFromAddressablesAsync("HalloweenEnvironment", LoadSceneMode.Additive, true, 0, null, null, LoadSceneRelationship.None, null);
             yield return i;
-            //yield return Addressables.LoadSceneAsync("HalloweenEnvironment", LoadSceneMode.Additive);
-            //yield return SceneManager.LoadSceneAsync(@"Scenes/HalloweenEnvironment", LoadSceneMode.Additive);
+
             try
             {
                 var batsParticle = Resources.FindObjectsOfTypeAll<ParticleSystem>().FirstOrDefault(x => x.name == "Bats");
